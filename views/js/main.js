@@ -521,9 +521,28 @@ function updatePositions() {
     logAverageFrame(timesToUpdatePosition);
   }
 }
+//Adapted from Stellar.js
+//https://github.com/markdalgleish/stellar.js/blob/master/jquery.stellar.js#L152
+function handleScrollEvent() {
+  ticking = false;
+
+  function update() {
+    updatePositions();
+    ticking = false;
+  }
+
+  function requestTick() {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', requestTick);
+  requestTick();
+}
 
 // runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+handleScrollEvent();
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
@@ -539,5 +558,5 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     document.querySelector("#movingPizzas1").appendChild(elem);
   }
-  updatePositions();
+  _handleScrollEvent.requestTick();
 });
